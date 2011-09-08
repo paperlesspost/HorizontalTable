@@ -40,7 +40,6 @@
 
 @end
 
-
 @implementation HorizontalTableView
 
 @synthesize pageViews=_pageViews;
@@ -49,7 +48,12 @@
 @synthesize delegate=_delegate;
 @synthesize columnPool=_columnPool;
 
-
+- (void)setShowsScrollIndicators:(BOOL)showIndicator
+{    
+    [self.scrollView setShowsVerticalScrollIndicator:showIndicator];
+    [self.scrollView setShowsHorizontalScrollIndicator:showIndicator];
+    _showsScrollIndicators = showIndicator;
+}
 
 - (void)refreshData {
     self.pageViews = [NSMutableArray array];
@@ -173,8 +177,6 @@
     for (NSInteger i = rightMostPageIndex + 1; i < [self.pageViews count]; i++) {
         [self removeColumn:i];
     }
-
- 
 }
 
 - (void)layoutPages {
@@ -200,18 +202,24 @@
     UIScrollView *scroller = [[UIScrollView alloc] init];
     CGRect rect = self.bounds;
     scroller.frame = rect;
-    scroller.backgroundColor = [UIColor blackColor];
+    scroller.backgroundColor = [UIColor clearColor];
 	scroller.delegate = self;
     scroller.autoresizesSubviews = YES;
     scroller.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
 	//self.scrollView.pagingEnabled = YES;
-	scroller.showsHorizontalScrollIndicator = YES;
-	scroller.showsVerticalScrollIndicator = NO;
+    scroller.showsVerticalScrollIndicator = _showsScrollIndicators;
+    scroller.showsHorizontalScrollIndicator = _showsScrollIndicators;
     scroller.alwaysBounceVertical = NO;
     self.scrollView = scroller;
 	[self addSubview:scroller];
     [scroller release], scroller = nil;
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
+    [tap setNumberOfTapsRequired:1];
+    [tap setDelegate:self];
+    [self addGestureRecognizer:tap];
+    [tap release];
 }
 
 
@@ -224,6 +232,22 @@
 	self.scrollView.contentOffset = CGPointMake(newIndex * [self pageSize].width, 0);
 }
 
+-(void)tapped:(UITapGestureRecognizer*)gesture
+{
+    for (UIView *pageView in self.pageViews) {
+        if ([pageView isKindOfClass:[UIView class]]) {
+            CGPoint point = [gesture locationInView:pageView];
+            if (point.x > 0 && point.x <= pageView.frame.size.width) {
+                if (point.y >0 && point.y <= pageView.frame.size.height) {
+                    if (_delegate && [_delegate respondsToSelector:@selector(tableView:viewWasTapped:)]) {
+                        [_delegate tableView:self viewWasTapped:pageView];
+                    }
+                }
+            }
+
+        }
+    }
+}
 
 #pragma mark -
 #pragma mark UIScrollViewDelegate methods

@@ -29,6 +29,9 @@
 - (UIView *)tableView:(HorizontalTableView *)tableView viewForIndex:(NSInteger)index;
 - (CGFloat)columnWidthForTableView:(HorizontalTableView *)tableView;
 
+@optional
+- (void)tableView:(HorizontalTableView *)tableView viewWasTapped:(UIView*)view;
+
 @end
 
 
@@ -45,11 +48,14 @@
     id _delegate;
     
     NSMutableArray *_columnPool;
+    
+    BOOL _showsScrollIndicators;
 }
 
 @property (assign) IBOutlet id<HorizontalTableViewDelegate> delegate;
 
 - (void)refreshData;
 - (UIView *)dequeueColumnView;
+- (void)setShowsScrollIndicators:(BOOL)showIndicator;
 
 @end
