@@ -56,6 +56,12 @@
 }
 
 - (void)refreshData {
+    //remove current view's first from the scrollview
+    for (UIView *v in self.pageViews) {
+        if ([v isKindOfClass:[UIView class]]) {
+            [v removeFromSuperview];
+        }
+    }
     self.pageViews = [NSMutableArray array];
 	// to save time and memory, we won't load the page views immediately
 	NSUInteger numberOfPhysicalPages = [self numberOfPages];
@@ -83,7 +89,7 @@
             pageView = [_delegate tableView:self viewForIndex:pageIndex];
             [self.pageViews replaceObjectAtIndex:pageIndex withObject:pageView];
             [self.scrollView addSubview:pageView];
-            DLog(@"View loaded for page %d", pageIndex);
+            //DLog(@"View loaded for page %d", pageIndex);
         }
 	} else {
 		pageView = [self.pageViews objectAtIndex:pageIndex];
