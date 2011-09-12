@@ -245,12 +245,14 @@
             CGPoint point = [gesture locationInView:pageView];
             if (point.x > 0 && point.x <= pageView.frame.size.width) {
                 if (point.y >0 && point.y <= pageView.frame.size.height) {
-                    if (_delegate && [_delegate respondsToSelector:@selector(tableView:viewWasTapped:)]) {
-                        [_delegate tableView:self viewWasTapped:pageView];
+                    if (_delegate && [_delegate respondsToSelector:@selector(tableView:viewTapped:)]) {
+                        [_delegate tableView:self viewTapped:pageView];
+                    }
+                    if (_delegate && [_delegate respondsToSelector:@selector(tableView:viewAtIndexTapped:)]) {
+                        [_delegate tableView:self viewAtIndexTapped:[self.pageViews indexOfObject:pageView]];
                     }
                 }
             }
-
         }
     }
 }

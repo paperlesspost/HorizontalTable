@@ -30,8 +30,8 @@
 - (CGFloat)columnWidthForTableView:(HorizontalTableView *)tableView;
 
 @optional
-- (void)tableView:(HorizontalTableView *)tableView viewWasTapped:(UIView*)view;
-
+- (void)tableView:(HorizontalTableView *)tableView viewTapped:(UIView*)view;
+- (void)tableView:(HorizontalTableView *)tableView viewAtIndexTapped:(NSInteger)index;
 @end
 
 
