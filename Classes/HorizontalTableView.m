@@ -141,14 +141,14 @@
     UIView *vw = [[self.columnPool lastObject] retain];
     if (vw) {
         [self.columnPool removeLastObject];
-        DLog(@"Supply from reuse pool");
+        //DLog(@"Supply from reuse pool");
     }
     return [vw autorelease];
 }
 
 - (void)removeColumn:(NSInteger)index {
     if ([self.pageViews objectAtIndex:index] != [NSNull null]) {
-        DLog(@"Removing view at position %d", index);
+        //DLog(@"Removing view at position %d", index);
         UIView *vw = [self.pageViews objectAtIndex:index];
         [self queueColumnView:vw];
         [vw removeFromSuperview];
@@ -202,6 +202,7 @@
 	_columnPool = [[NSMutableArray alloc] initWithCapacity:kColumnPoolSize];
     _columnWidth = nil;
     [self setClipsToBounds:YES];
+    [self setUserInteractionEnabled:YES];
     
     self.autoresizesSubviews = YES;
     
@@ -220,14 +221,13 @@
     self.scrollView = scroller;
 	[self addSubview:scroller];
     [scroller release], scroller = nil;
-    
+        
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
     [tap setNumberOfTapsRequired:1];
     [tap setDelegate:self];
     [self addGestureRecognizer:tap];
     [tap release];
 }
-
 
 - (NSUInteger)physicalPageIndex {
     NSUInteger page = self.scrollView.contentOffset.x / [self columnWidth];
@@ -245,6 +245,7 @@
             CGPoint point = [gesture locationInView:pageView];
             if (point.x > 0 && point.x <= pageView.frame.size.width) {
                 if (point.y >0 && point.y <= pageView.frame.size.height) {
+                    [pageView performSelectorInBackground:@selector(setBackgroundColor:) withObject:[UIColor darkGrayColor]];
                     if (_delegate && [_delegate respondsToSelector:@selector(tableView:viewTapped:)]) {
                         [_delegate tableView:self viewTapped:pageView];
                     }
@@ -270,20 +271,21 @@
 	
 	[self currentPageIndexDidChange];
     
-    CGSize rect = [self.scrollView contentSize];
-    DLog(@"CSize = %@", NSStringFromCGSize(rect));
+    //CGSize rect = [self.scrollView contentSize];
+    //DLog(@"CSize = %@", NSStringFromCGSize(rect));
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-	DLog(@"scrollViewDidEndDecelerating");
+	//DLog(@"scrollViewDidEndDecelerating");
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
+
 
 
 - (void)layoutSubviews {

@@ -34,9 +34,8 @@
 - (void)tableView:(HorizontalTableView *)tableView viewAtIndexTapped:(NSInteger)index;
 @end
 
-
-
-@interface HorizontalTableView : UIView {
+@interface HorizontalTableView : UIView <
+UIGestureRecognizerDelegate>{
 	NSMutableArray *_pageViews;
 	UIScrollView *_scrollView;
 	NSUInteger _currentPageIndex;
@@ -57,5 +56,7 @@
 - (void)refreshData;
 - (UIView *)dequeueColumnView;
 - (void)setShowsScrollIndicators:(BOOL)showIndicator;
+- (void)prepareView;
+- (UIView *)viewForPhysicalPage:(NSUInteger)pageIndex;
 
 @end
